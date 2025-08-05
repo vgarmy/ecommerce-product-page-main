@@ -12,6 +12,7 @@ import productImg4 from '../images/image-product-4.jpg';
 function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(productImg1);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const images = [productImg1, productImg2, productImg3, productImg4];
   const [overlayOpen, setOverlayOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -19,105 +20,130 @@ function App() {
   const [cartCount, setCartCount] = useState(0);
   const productPrice = 125.00;
   return (
-    <div className='w-[1115px] mx-auto' role="main">
-      <div className=" flex items-center py-5 border-b border-gray-300 pb-[50px] relative">
-        <div className="logo">
+
+    <div className="max-w-[1115px] w-full px-4 mx-auto" role="main">
+      <div className="flex items-center justify-between py-5 lg:border-b lg:border-gray-300 lg:pb-[50px] relative flex-wrap">
+        {/* Hamburger Menu - Mobile Only */}
+        <div className="lg:hidden flex items-center h-[40px] order-1 mr-4">
+          <button onClick={() => setIsMobileMenuOpen(true)} className="text-[var(--Dark-grayish-blue)]">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+        {/* Mobilmeny */}
+        <div
+          className={`fixed inset-0 z-50 transition-all duration-300 ${isMobileMenuOpen ? 'bg-black bg-opacity-50' : 'pointer-events-none'
+            }`}
+        >
+          <div
+            className={`fixed top-0 left-0 h-full bg-white w-[75%] p-6 shadow-lg transform transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+              }`}
+          >
+            {/* Stäng-knapp */}
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="absolute top-4 left-4 text-[var(--Dark-grayish-blue)]"
+              aria-label="Close menu"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Menylänkar */}
+            <nav className="mt-12 space-y-6 text-[var(--Dark-grayish-blue)] text-lg font-medium">
+              {["Collections", "Men", "Women", "About", "Contact"].map((item) => (
+                <div key={item} className="cursor-pointer hover:text-black">
+                  {item}
+                </div>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+
+        {/* Logo */}
+        <div className="logo flex items-center h-[40px] order-2 lg:order-1">
           <img src={logo} alt="Logo" className="h-6" />
         </div>
 
-        <div className="flex gap-5 text-sm font-medium text-[var(--Dark-grayish-blue)] ml-[46px] relative">
-          <div className="group relative">
-            <span className="cursor-pointer hover:text-black">Collections</span>
-            <div className="absolute bottom-[-60px] left-0 w-full h-[3px] bg-[var(--Orange)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
-          </div>
-          <div className="group relative">
-            <span className="cursor-pointer hover:text-black">Men</span>
-            <div className="absolute bottom-[-60px] left-0 w-full h-[3px] bg-[var(--Orange)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
-          </div>
-          <div className="group relative">
-            <span className="cursor-pointer hover:text-black">Women</span>
-            <div className="absolute bottom-[-60px] left-0 w-full h-[3px] bg-[var(--Orange)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
-          </div>
-          <div className="group relative">
-            <span className="cursor-pointer hover:text-black">About</span>
-            <div className="absolute bottom-[-60px] left-0 w-full h-[3px] bg-[var(--Orange)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
-          </div>
-          <div className="group relative">
-            <span className="cursor-pointer hover:text-black">Contact</span>
-            <div className="absolute bottom-[-60px] left-0 w-full h-[3px] bg-[var(--Orange)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-6 ml-auto relative">
-   <div
-  className="relative"
-  onMouseEnter={() => setIsCartOpen(true)}
-  onMouseLeave={() => setIsCartOpen(false)}
->
-  {/* Cart Icon with badge */}
-  <div className="relative cursor-pointer">
-    <FiShoppingCart className="w-6 h-6 text-[var(--Dark-grayish-blue)]" />
-    {cartCount > 0 && (
-      <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-        {cartCount}
-      </div>
-    )}
-  </div>
-
-  {/* Spacer to prevent hover gap (invisible bridge) */}
-  <div className="absolute left-1/2 top-6 w-[360px] h-4 -translate-x-1/2" />
-
-  {/* Popup */}
-  {isCartOpen && (
-    <div className="absolute left-1/2 top-10 w-[360px] bg-white shadow-lg rounded-lg border border-gray-200 text-sm text-gray-600 -translate-x-1/2 z-50">
-      <div className="h-[68px] flex items-center px-6">
-        <p className="font-bold text-black">Cart</p>
-      </div>
-      <div className="border-b border-gray-300" />
-
-      {cartCount === 0 ? (
-        <div className="flex items-center justify-center h-[192px]">
-          <p className="text-[var(--Dark-grayish-blue)] font-extrabold">Your cart is empty.</p>
-        </div>
-      ) : (
-        <div className="p-6 space-y-4">
-          <div className="flex items-center gap-4">
-            <img src={productImg1} alt="Product" className="w-12 h-12 rounded-lg" />
-            <div className="flex-1">
-              <p className="text-gray-600 text-sm">Fall Limited Edition Sneakers</p>
-              <p className="text-sm">
-                ${productPrice.toFixed(2)} × {cartCount}
-                <span className="font-bold text-black ml-1">
-                  ${(productPrice * cartCount).toFixed(2)}
-                </span>
-              </p>
+        {/* Navigation - Hidden on Mobile */}
+        <div className="hidden lg:flex items-center h-[40px] gap-5 text-sm font-medium text-[var(--Dark-grayish-blue)] ml-[46px] relative order-3">
+          {["Collections", "Men", "Women", "About", "Contact"].map((item) => (
+            <div key={item} className="group relative">
+              <span className="cursor-pointer hover:text-black">{item}</span>
+              <div className="absolute bottom-[-60px] left-0 w-full h-[3px] bg-[var(--Orange)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
             </div>
-            <button
-              onClick={() => {setCartCount(0)}}
-              className="cursor-pointer text-gray-400 hover:text-orange-500 transition"
-              aria-label="Remove from cart"
-            >
-              <FiTrash2 className="w-5 h-5" />
-            </button>
+          ))}
+        </div>
+
+        {/* Cart & Avatar */}
+        <div className="flex items-center gap-6 ml-auto h-[40px] order-4">
+          {/* Cart */}
+          <div
+            className="relative flex items-center"
+            onMouseEnter={() => setIsCartOpen(true)}
+            onMouseLeave={() => setIsCartOpen(false)}
+          >
+            <div className="relative cursor-pointer">
+              <FiShoppingCart className="w-6 h-6 text-[var(--Dark-grayish-blue)]" />
+              {cartCount > 0 && (
+                <div className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                  {cartCount}
+                </div>
+              )}
+            </div>
+            <div className="absolute left-1/2 top-6 w-[360px] h-4 -translate-x-1/2" />
+            {isCartOpen && (
+              <div className="absolute left-1/2 top-10 w-[360px] bg-white shadow-lg rounded-lg border border-gray-200 text-sm text-gray-600 -translate-x-1/2 z-50">
+                <div className="h-[68px] flex items-center px-6">
+                  <p className="font-bold text-black">Cart</p>
+                </div>
+                <div className="border-b border-gray-300" />
+                {cartCount === 0 ? (
+                  <div className="flex items-center justify-center h-[192px]">
+                    <p className="text-[var(--Dark-grayish-blue)] font-extrabold">Your cart is empty.</p>
+                  </div>
+                ) : (
+                  <div className="p-6 space-y-4">
+                    <div className="flex items-center gap-4">
+                      <img src={productImg1} alt="Product" className="w-12 h-12 rounded-lg" />
+                      <div className="flex-1">
+                        <p className="text-gray-600 text-sm">Fall Limited Edition Sneakers</p>
+                        <p className="text-sm">
+                          ${productPrice.toFixed(2)} × {cartCount}
+                          <span className="font-bold text-black ml-1">
+                            ${(productPrice * cartCount).toFixed(2)}
+                          </span>
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setCartCount(0)}
+                        className="cursor-pointer text-gray-400 hover:text-orange-500 transition"
+                        aria-label="Remove from cart"
+                      >
+                        <FiTrash2 className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <button className="cursor-pointer w-full bg-orange-500 text-white text-sm py-3 rounded-lg hover:bg-orange-600 transition">
+                      Checkout
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          <button className="cursor-pointer w-full bg-orange-500 text-white text-sm py-3 rounded-lg hover:bg-orange-600 transition">
-            Checkout
-          </button>
-        </div>
-      )}
-    </div>
-  )}
-</div>
-
-
-
-          {/* Avatar (not part of group) */}
+          {/* Avatar */}
           <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent hover:border-orange-500 transition-colors duration-300 cursor-pointer">
             <img src={avatar} alt="User Avatar" className="w-full h-full object-cover" />
           </div>
         </div>
       </div>
+
+
+
       <div className="product flex gap-10 mt-10 p-8">
         {/* Left side: Product Images */}
         <div className="w-1/2">
